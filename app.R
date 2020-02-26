@@ -16,8 +16,7 @@ ui <- dashboardPage(
     sidebarMenu(
       menuItem("Project Information", tabName = "homepage"),
       menuItem("Groundwater Basins", tabName = "basins"),
-      menuItem("Recharge Suitability", tabName = "suitability"),
-      menuItem("Explore Benefits and Fesibility", tabName = "multibenefit"),
+      menuItem("Explore Recharge Suitability", tabName = "suitability_considerations"),
       menuItem("Learn More!", tabName = "referencepage")
     )
   ),
@@ -40,15 +39,9 @@ ui <- dashboardPage(
         )
       ),
       tabItem(
-        tabName = "suitability",
+        tabName = "suitability_considerations",
         fluidRow(
-          box(title = "Recharge Suitability Rankings")
-        )
-      ),
-      tabItem(
-        tabName = "multibenefit",
-        fluidRow(
-          box(title = "Additional Considerations",
+          box(title = "Benefits and Feasibility Considerations",
               checkboxGroupInput("consideration_select",
                                  label = h3("Choose recharge considerations to visualize"),
                                  choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen")))

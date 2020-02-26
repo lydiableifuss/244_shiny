@@ -50,7 +50,7 @@ ui <- dashboardPage(
       tabItem(
         tabName = "referencepage",
         fluidRow(
-          box(title = "Thank you to our client EDF")
+          box(title = "Data Sources")
         )
       )
     )

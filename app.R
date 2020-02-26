@@ -21,7 +21,40 @@ ui <- dashboardPage(
       menuItem("Learn More!", tabName = "referencepage")
     )
   ),
-  dashboardBody()
+  dashboardBody(
+    tabItems(
+      tabItem(
+        tabName = "homepage",
+        fluidRow(
+          box(title = "Project Overview Goes Here")
+        )
+      ),
+      tabItem(
+        tabName = "basins",
+        fluidRow(
+          box(title = "Central Valley Groundwater Basins")
+        )
+      ),
+      tabItem(
+        tabName = "suitability",
+        fluidRow(
+          box(title = "Recharge Suitability Rankings")
+        )
+      ),
+      tabItem(
+        tabName = "multibenefit",
+        fluidRow(
+          box(title = "Additional Considerations")
+        )
+      ),
+      tabItem(
+        tabName = "referencepage",
+        fluidRow(
+          box(title = "Thank you to our client EDF")
+        )
+      )
+    )
+  )
 )
 
 

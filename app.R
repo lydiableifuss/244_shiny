@@ -4,6 +4,7 @@ library(shiny)
 library(tidyverse)
 library(shinythemes)
 library(shinydashboard)
+library(ggmap)
 
 # Read in our data
 
@@ -36,6 +37,12 @@ ui <- dashboardPage(
                           "Choose a groundwater basin to explore further:",
                           choices = c("Madera", "Kern", "Chowchilla", "Kaweah"),
                           selected = NULL))
+        ),
+        fluidRow(
+          box(title = "Central Valley GW Basins",
+              textInput("address",
+                        label = ("Enter an address in the Central Valley to explore further:"),
+                        value = "Address"))
         )
       ),
       tabItem(
@@ -43,7 +50,7 @@ ui <- dashboardPage(
         fluidRow(
           box(title = "Benefits and Feasibility Considerations",
               checkboxGroupInput("consideration_select",
-                                 label = h3("Choose recharge considerations to visualize"),
+                                 label = ("Choose recharge considerations to visualize"),
                                  choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen")))
         )
       ),

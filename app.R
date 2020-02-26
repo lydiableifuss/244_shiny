@@ -32,7 +32,11 @@ ui <- dashboardPage(
       tabItem(
         tabName = "basins",
         fluidRow(
-          box(title = "Central Valley Groundwater Basins")
+          box(title = "Central Valley Groundwater Basins",
+              selectInput("gw_basin",
+                          "Choose a groundwater basin to explore further:",
+                          choices = c("Madera", "Kern", "Chowchilla", "Kaweah"),
+                          selected = NULL))
         )
       ),
       tabItem(
@@ -44,7 +48,10 @@ ui <- dashboardPage(
       tabItem(
         tabName = "multibenefit",
         fluidRow(
-          box(title = "Additional Considerations")
+          box(title = "Additional Considerations",
+              checkboxGroupInput("consideration_select",
+                                 label = h3("Choose recharge considerations to visualize"),
+                                 choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen")))
         )
       ),
       tabItem(

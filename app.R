@@ -1,12 +1,41 @@
 # Load in necessary packages
 
+#General Shiny 
 library(shiny)
 library(tidyverse)
 library(shinythemes)
 library(shinydashboard)
 library(ggmap)
+library(here)
+library(janitor)
+library(snakecase)
+
+#Mapping 
+library(paletteer)
+library(sf)
+library(tmap)
+library(mapview)
+library(tmaptools)
+library(rmapshaper)
+
+#1 Map of central valley basins, when you select your basin, the fill color changes (cv.shp and sgma_basins.shp)
 
 # Read in our data
+cv_all <- read_sf(dsn = here::here("data"),
+                  layer = "cv") %>% 
+  st_transform(crs = 4326) %>% 
+  clean_names()
+
+sgma_basins_all <- read_sf(dsn = here::here("data"),
+                           layer = "sgma_basins") %>% 
+  st_transform(crs = 4326) %>% 
+  clean_names() 
+
+sgma_basins <- sgma_basins_all %>% 
+  separate(basin_su_1, c("basin", "sub_basin"), sep = " - ") %>% 
+  mutate(sub_basin_final = ifelse(is.na(sub_basin), basin, sub_basin)) %>% 
+  mutate(sub_basin_final = to_upper_camel_case(sub_basin_final)) 
+
 
 
 # User interface
@@ -15,10 +44,18 @@ ui <- dashboardPage(
   dashboardHeader(title = "Recharge for Resilience"),
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Project Information", tabName = "homepage"),
-      menuItem("Groundwater Basins", tabName = "basins"),
-      menuItem("Explore Recharge Suitability", tabName = "suitability_considerations"),
-      menuItem("Learn More!", tabName = "referencepage")
+      menuItem("Project Information", 
+               tabName = "homepage", 
+               icon = icon("tint")),
+      menuItem("Groundwater Basins", 
+               tabName = "basins", 
+               icon = icon("map-marker-alt")),
+      menuItem("Explore Recharge Suitability", 
+               tabName = "suitability_considerations", 
+               icon = icon("search-plus")),
+      menuItem("Learn More!", 
+               tabName = "referencepage", 
+               icon = icon("book-open"))
     )
   ),
   dashboardBody(
@@ -35,7 +72,7 @@ ui <- dashboardPage(
           box(title = "Central Valley Groundwater Basins",
               selectInput("gw_basin",
                           "Choose a groundwater basin to explore further:",
-                          choices = c("Madera", "Kern", "Chowchilla", "Kaweah"),
+                          choices = c(unique(sgma_basins$sub_basin_final)),
                           selected = NULL))
         ),
         fluidRow(
@@ -67,7 +104,14 @@ ui <- dashboardPage(
 
 # Server
 
-server <- function(input, output){}
+server <- function(input, output){
+  
+  gw_basin <- reactive({
+    sgma_basins %>% 
+      filter(basin_name %in% input$gw_basin)
+  })
+  
+}
 
 
 

@@ -16,7 +16,8 @@ library(sf)
 library(tmap)
 library(mapview)
 library(tmaptools)
-library(rmapshaper)
+library(leaflet)
+#library(rmapshaper)
 
 #1 Map of central valley basins, when you select your basin, the fill color changes (cv.shp and sgma_basins.shp)
 
@@ -35,6 +36,7 @@ sgma_basins <- sgma_basins_all %>%
   separate(basin_su_1, c("basin", "sub_basin"), sep = " - ") %>% 
   mutate(sub_basin_final = ifelse(is.na(sub_basin), basin, sub_basin)) %>% 
   mutate(sub_basin_final = to_upper_camel_case(sub_basin_final)) 
+
 
 
 
@@ -71,9 +73,13 @@ ui <- dashboardPage(
         fluidRow(
           box(title = "Central Valley Groundwater Basins",
               selectInput("gw_basin",
-                          "Choose a groundwater basin to explore further:",
+                          label = ("Choose a groundwater basin to explore further:"),
                           choices = c(unique(sgma_basins$sub_basin_final)),
                           selected = NULL))
+        ),
+        fluidPage(
+          box(title = "Map of Groundwater Basins",
+          tmapOutput("ca_map")
         ),
         fluidRow(
           box(title = "Central Valley GW Basins",
@@ -81,6 +87,7 @@ ui <- dashboardPage(
                         label = ("Enter an address in the Central Valley to explore further:"),
                         value = "Address"))
         )
+      )
       ),
       tabItem(
         tabName = "suitability_considerations",
@@ -102,6 +109,7 @@ ui <- dashboardPage(
 )
 
 
+
 # Server
 
 server <- function(input, output){
@@ -110,6 +118,14 @@ server <- function(input, output){
     sgma_basins %>% 
       filter(basin_name %in% input$gw_basin)
   })
+  
+  output$ca_map = renderLeaflet({
+    leaflet() %>% 
+      addProviderTiles(providers$CartoDB.Positron) %>% 
+      addPolygons(data = sgma_basins)
+      
+  }
+  )
   
 }
 

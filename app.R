@@ -82,7 +82,7 @@ ui <- dashboardPage(
         fluidPage(
           box(title = "Map of Groundwater Basins",
           tmapOutput("ca_map")
-        ),
+        )
         )
       ),
       tabItem(
@@ -128,7 +128,8 @@ server <- function(input, output){
                   label = ~sub_basin_final,
                   color = "black",
                   weight = 0.5,
-                  fillOpacity = 0.1,
+                  fillOpacity = 0.1
+                  #,
                   #fillColor = ~pal(sub_basin_final)
                           ) %>% 
       addPolygons(data = basin_filter(),

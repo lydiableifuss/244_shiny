@@ -35,8 +35,7 @@ sgma_basins_all <- read_sf(dsn = here::here("data"),
 sgma_basins <- sgma_basins_all %>% 
   separate(basin_su_1, c("basin", "sub_basin"), sep = " - ") %>% 
   mutate(sub_basin_final = ifelse(is.na(sub_basin), basin, sub_basin)) %>% 
-  mutate(sub_basin_final = to_upper_camel_case(sub_basin_final)) %>% 
-  unlist(lapply(strsplit(sub_basin_final,''), paste, collapse = ' '))
+  mutate(sub_basin_final = to_upper_camel_case(sub_basin_final, sep_out = " "))
 
 
 # User interface

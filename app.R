@@ -114,6 +114,13 @@ server <- function(input, output){
   
   #pal <- colorBin("red", domain = sgma_basins$sub_basin_final, bins = bins)
   
+  basin_filter <- reactive({
+    
+    sgma_basins %>% 
+      filter(sub_basin_final == input$gw_basin)
+    
+  })
+  
   basin_map <- reactive({
     leaflet() %>% 
       addProviderTiles(providers$CartoDB.Positron) %>% 
@@ -123,7 +130,9 @@ server <- function(input, output){
                   weight = 0.5,
                   fillOpacity = 0.1,
                   #fillColor = ~pal(sub_basin_final)
-                          ) 
+                          ) %>% 
+      addPolygons(data = basin_filter(),
+                  color = "blue")
  })
   
   

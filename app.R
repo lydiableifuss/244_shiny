@@ -9,6 +9,7 @@ library(ggmap)
 library(here)
 library(janitor)
 library(snakecase)
+library(RColorBrewer)
 
 #Mapping 
 library(paletteer)
@@ -49,6 +50,7 @@ wgs84 = "+proj=longlat +datum=WGS84 +ellps=WGS84 +no_defs" # Just have this read
 max_score_raster <- raster::raster(here::here("data", "Max_final_score_LU.tif"))
 
 max_score_reproj = projectRaster(max_score_raster, crs = wgs84, method = "bilinear")
+
 
 
 # User interface
@@ -110,7 +112,7 @@ ui <- dashboardPage(
         ),
         fluidPage(
           box(title = "Map of Max Scores",
-              tmapOutput("max_score_map", height = 425, width = 425),
+              leafletOutput("max_map", height = 425, width = 425),
               status = "info",
               width = 8
           )
@@ -175,23 +177,17 @@ server <- function(input, output){
   #################
   #Second Map!
   
-  max_score_filter <- reactive({
-      st_intersection(max_score_raster, input$gw_basin)
-    
-  })
+  #max_score_filter <- mask(max_score_raster, basin_filter)
+  # 'mask' is not working, need to find a new method of clipping raster to selected basin 
+
   
   max_score_map <- reactive({
     leaflet() %>% 
       addProviderTiles(providers$CartoDB.Positron) %>% 
-      addPolygons(data = max_score_filter,
-                  #label = ~sub_basin_final,
-                  color = "black",
-                  weight = 0.5,
-                  fillOpacity = 0.1
-      ) 
+      addRasterImage(max_score_filter) 
   })
   
-  output$max_map = renderLeaflet({
+  output$max_map <- renderLeaflet({
     max_score_map()
   })
   
@@ -202,3 +198,4 @@ server <- function(input, output){
 # Put them together to make our app!
 
 shinyApp(ui = ui, server = server)
+

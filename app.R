@@ -17,6 +17,7 @@ library(tmap)
 library(mapview)
 library(tmaptools)
 library(leaflet)
+library(htmltools)
 #library(rmapshaper)   
 
 #1 Map of central valley basins, when you select your basin, the fill color changes (cv.shp and sgma_basins.shp)
@@ -32,11 +33,14 @@ sgma_basins_all <- read_sf(dsn = here::here("data"),
   st_transform(crs = 4326) %>% 
   clean_names() 
 
+basin_pop_area <- read_csv(here("data", "basin_pop_area.csv"))
+
 sgma_basins <- sgma_basins_all %>% 
   separate(basin_su_1, c("basin", "sub_basin"), sep = " - ") %>% 
   mutate(sub_basin_final = ifelse(is.na(sub_basin), basin, sub_basin)) %>% 
   mutate(sub_basin_final = to_upper_camel_case(sub_basin_final, sep_out = " ")) %>% 
-  arrange(sub_basin_final)
+  arrange(sub_basin_final) %>% 
+  inner_join(basin_pop_area)
 
 
 # User interface
@@ -82,7 +86,9 @@ ui <- dashboardPage(
         ),
         fluidPage(
           box(title = "Map of Groundwater Basins",
-          tmapOutput("ca_map")
+          tmapOutput("ca_map", height = 425, width = 425),
+          status = "info",
+          width = 8
         )
         )
       ),
@@ -111,15 +117,20 @@ ui <- dashboardPage(
 
 server <- function(input, output){
   
- # bins <-reactive({ c(input$gw_basin) })
-  
-  #pal <- colorBin("red", domain = sgma_basins$sub_basin_final, bins = bins)
-  
   basin_filter <- reactive({
     
     sgma_basins %>% 
       filter(sub_basin_final == input$gw_basin)
     
+  })
+  
+  basin_labels <- reactive({
+    
+    sprintf(
+    "%s, Area: %g acres, Population: %g, DWR Priority: %s",
+    basin_filter()$sub_basin_final, basin_filter()$area_acres, basin_filter()$population, basin_filter()$priority %>% 
+      lapply(htmltools::HTML)
+  )
   })
   
   basin_map <- reactive({
@@ -130,11 +141,14 @@ server <- function(input, output){
                   color = "black",
                   weight = 0.5,
                   fillOpacity = 0.1
-                  #,
-                  #fillColor = ~pal(sub_basin_final)
                           ) %>% 
       addPolygons(data = basin_filter(),
-                  color = "blue")
+                  color = "blue",
+                  weight = 0.5,
+                  fillOpacity = 0.8,
+                  label = basin_labels(),
+                  labelOptions = labelOptions(direction = 'bottom',
+                                              offset=c(0,15)))
  })
   
   

@@ -184,7 +184,7 @@ server <- function(input, output){
   max_score_map <- reactive({
     leaflet() %>% 
       addProviderTiles(providers$CartoDB.Positron) %>% 
-      addRasterImage(max_score_filter) 
+      addRasterImage(max_score_raster) 
   })
   
   output$max_map <- renderLeaflet({

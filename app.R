@@ -18,6 +18,7 @@ library(mapview)
 library(tmaptools)
 library(leaflet)
 library(htmltools)
+library(raster)
 #library(rmapshaper)   
 
 #1 Map of central valley basins, when you select your basin, the fill color changes (cv.shp and sgma_basins.shp)
@@ -41,6 +42,12 @@ sgma_basins <- sgma_basins_all %>%
   mutate(sub_basin_final = to_upper_camel_case(sub_basin_final, sep_out = " ")) %>% 
   arrange(sub_basin_final) %>% 
   inner_join(basin_pop_area)
+
+wgs84 = "+proj=longlat +datum=WGS84 +ellps=WGS84 +no_defs" # Just have this ready to copy/paste
+
+max_score_raster <- raster::raster(here::here("data", "Max_final_score_LU.tif"))
+
+max_score_reproj = projectRaster(max_score_raster, crs = wgs84, method = "bilinear")
 
 
 # User interface
@@ -124,6 +131,7 @@ server <- function(input, output){
     
   })
   
+  
   basin_labels <- reactive({
     
     sprintf(
@@ -156,6 +164,15 @@ server <- function(input, output){
     basin_map()
   })
   
+  #################
+  #Second Map!
+  
+  max_score_filter <- reactive({
+    
+    sgma_basins %>% 
+      filter(sub_basin_final == input$gw_basin)
+    
+  })
 }
 
 

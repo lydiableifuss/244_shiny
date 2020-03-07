@@ -19,6 +19,7 @@ library(tmaptools)
 library(leaflet)
 library(htmltools)
 library(raster)
+library(tiler)
 #library(rmapshaper)   
 
 #1 Map of central valley basins, when you select your basin, the fill color changes (cv.shp and sgma_basins.shp)
@@ -106,6 +107,13 @@ ui <- dashboardPage(
               checkboxGroupInput("consideration_select",
                                  label = ("Choose recharge considerations to visualize"),
                                  choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen")))
+        ),
+        fluidPage(
+          box(title = "Map of Max Scores",
+              tmapOutput("max_score_map", height = 425, width = 425),
+              status = "info",
+              width = 8
+          )
         )
       ),
       tabItem(
@@ -168,11 +176,25 @@ server <- function(input, output){
   #Second Map!
   
   max_score_filter <- reactive({
-    
-    sgma_basins %>% 
-      filter(sub_basin_final == input$gw_basin)
+      st_intersection(max_score_raster, input$gw_basin)
     
   })
+  
+  max_score_map <- reactive({
+    leaflet() %>% 
+      addProviderTiles(providers$CartoDB.Positron) %>% 
+      addPolygons(data = max_score_filter,
+                  #label = ~sub_basin_final,
+                  color = "black",
+                  weight = 0.5,
+                  fillOpacity = 0.1
+      ) 
+  })
+  
+  output$max_map = renderLeaflet({
+    max_score_map()
+  })
+  
 }
 
 

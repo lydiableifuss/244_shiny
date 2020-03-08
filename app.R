@@ -84,23 +84,28 @@ ui <- dashboardPage(
       tabItem(
         tabName = "basins",
         fluidRow(
-          box(title = "Central Valley Groundwater Basins",
+          box(title = "Find your groundwater basin!",
+                textInput("zip_code",
+                          label = ("Enter an zipcode in the Central Valley to identify its subbasin:"),
+                          value = "Zip Code")),
+          box(title = "Explore your basin's characteristics!",
               selectInput("gw_basin",
-                          label = ("Choose a groundwater basin to explore further:"),
+                          label = ("Choose a groundwater basin to see its location and statistics:"),
                           choices = c(unique(sgma_basins$sub_basin_final)),
-                          selected = NULL)),
-            box(title = "Central Valley GW Basins",
-                textInput("address",
-                          label = ("Enter an address in the Central Valley to explore further:"),
-                          value = "Address"))  
+                          selected = NULL))
         ),
         fluidPage(
           box(title = "Map of Groundwater Basins",
           tmapOutput("ca_map", height = 425, width = 425),
           status = "info",
-          width = 8
+          width = 6
+        ),
+        box(title = "Groundwater Basin Statistics",
+            #tmapOutput("ca_map", height = 425, width = 425),
+            status = "info",
+            width = 6
         )
-        )
+        ),
       ),
       tabItem(
         tabName = "suitability_considerations",
@@ -114,7 +119,7 @@ ui <- dashboardPage(
           box(title = "Map of Max Scores",
               leafletOutput("max_map", height = 425, width = 425),
               status = "info",
-              width = 8
+              width = 6
           )
         )
       ),
@@ -156,6 +161,8 @@ server <- function(input, output){
       addProviderTiles(providers$CartoDB.Positron) %>% 
       addPolygons(data = sgma_basins,
                   label = ~sub_basin_final,
+                  labelOptions = labelOptions(direction = 'bottom',
+                                              offset=c(0,15)),
                   color = "black",
                   weight = 0.5,
                   fillOpacity = 0.1
@@ -164,7 +171,7 @@ server <- function(input, output){
                   color = "blue",
                   weight = 0.5,
                   fillOpacity = 0.8,
-                  label = basin_labels(),
+                  label = ~sub_basin_final,
                   labelOptions = labelOptions(direction = 'bottom',
                                               offset=c(0,15)))
  })

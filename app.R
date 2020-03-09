@@ -43,7 +43,7 @@ sgma_basins <- sgma_basins_all %>%
   mutate(sub_basin_final = ifelse(is.na(sub_basin), basin, sub_basin)) %>% 
   mutate(sub_basin_final = to_upper_camel_case(sub_basin_final, sep_out = " ")) %>% 
   arrange(sub_basin_final) %>% 
-  inner_join(basin_pop_area)
+  full_join(basin_pop_area)
 
 wgs84 = "+proj=longlat +datum=WGS84 +ellps=WGS84 +no_defs" # Just have this ready to copy/paste
 

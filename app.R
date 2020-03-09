@@ -143,6 +143,9 @@ ui <- dashboardPage(
 
 server <- function(input, output){
   
+  ################################################
+  # First map!
+  
   basin_filter <- reactive({
     
     sgma_basins %>% 
@@ -185,7 +188,10 @@ server <- function(input, output){
     basin_map()
   })
   
-  #################
+  ###################################################
+  # Table with basin stats!
+  
+  ####################################################
   #Second Map!
   
   #max_score_filter <- mask(max_score_raster, basin_filter)

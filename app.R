@@ -43,7 +43,8 @@ sgma_basins <- sgma_basins_all %>%
   mutate(sub_basin_final = ifelse(is.na(sub_basin), basin, sub_basin)) %>% 
   mutate(sub_basin_final = to_upper_camel_case(sub_basin_final, sep_out = " ")) %>% 
   arrange(sub_basin_final) %>% 
-  full_join(basin_pop_area)
+  full_join(basin_pop_area) %>% 
+  dplyr::select(-sub_basin)
 
 wgs84 = "+proj=longlat +datum=WGS84 +ellps=WGS84 +no_defs" # Just have this ready to copy/paste
 
@@ -105,12 +106,9 @@ ui <- dashboardPage(
           tmapOutput("ca_map", height = 425, width = 425),
           status = "info",
           width = 6
-        ),
-        box(title = "Groundwater Basin Statistics",
-            #tmapOutput("ca_map", height = 425, width = 425),
-            status = "info",
-            width = 6
-        )
+          ),
+          box(title = "Groundwater Basin Statistics",
+            tableOutput("basin_table"))
         ),
       ),
       tabItem(
@@ -153,7 +151,7 @@ server <- function(input, output){
   basin_filter <- reactive({
     
     sgma_basins %>% 
-      filter(sub_basin_final == input$gw_basin)
+      filter(sub_basin_final == input$gw_basin) 
     
   })
   
@@ -168,14 +166,14 @@ server <- function(input, output){
   
   
   
-  basin_labels <- reactive({
+  #basin_labels <- reactive({
     
-    sprintf(
-    "%s, Area: %g acres, Population: %g, DWR Priority: %s",
-    basin_filter()$sub_basin_final, basin_filter()$area_acres, basin_filter()$population, basin_filter()$priority %>% 
-      lapply(htmltools::HTML)
-  )
-  })
+    #sprintf(
+    #"%s, Area: %g acres, Population: %g, DWR Priority: %s",
+    #basin_filter()$sub_basin_final, basin_filter()$area_acres, basin_filter()$population, basin_filter()$priority %>% 
+      #lapply(htmltools::HTML)
+  #)
+  #})
   
   basin_map <- reactive({
     leaflet() %>% 
@@ -211,6 +209,17 @@ server <- function(input, output){
   
   ###################################################
   # Table with basin stats!
+  
+  table_info <- reactive({
+    
+    sgma_basins %>% 
+      dplyr::select(sub_basin_final, area_sq_mi, population, priority) %>% 
+      dplyr::filter(sub_basin_final == input$gw_basin)
+  }) 
+  
+  output$basin_table <- renderTable({
+    table_info()
+  })
   
   ####################################################
   #Second Map!

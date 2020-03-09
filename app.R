@@ -51,6 +51,10 @@ max_score_raster <- raster::raster(here::here("data", "Max_final_score_LU.tif"))
 
 max_score_reproj = projectRaster(max_score_raster, crs = wgs84, method = "bilinear")
 
+zipcodes <- read_sf(dsn = here::here("data"),
+                           layer = "ZCTA2010") %>% 
+  clean_names() %>% 
+  dplyr::select(zcta)
 
 
 # User interface

@@ -226,7 +226,9 @@ server <- function(input, output){
   ####################################################
   #Second Map!
   
-  max_score_filter <- reactive({mask(max_score_raster, basin_filter)})
+  max_score_filter <- reactive({
+    mask(max_score_raster, basin_filter)
+    })
   # 'mask' is not working, need to find a new method of clipping raster to selected basin 
 
   

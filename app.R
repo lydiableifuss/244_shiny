@@ -190,7 +190,7 @@ server <- function(input, output){
   
   output$basin_table <- renderTable({
     
-    data.frame(a = c(1,2), b = c("yes","no"))
+    data.frame(basin_name = c(input$gw_basin), basin_area = c(basin_filter()$area_sq_mi), population = c(basin_filter()$population), DWR_priority = c(basin_filter()$priority))
     
   })
   

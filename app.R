@@ -92,7 +92,7 @@ ui <- navbarPage("Recharge for Resilience",
                             sidebarPanel("Select datasets to visualize in your basin",
                                          checkboxGroupInput("consideration_select",
                                                             label = ("Choose recharge considerations to visualize"),
-                                                            choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen")),
+                                                            choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen"))
                             ),
                             mainPanel(leafletOutput("max_map")
                             )

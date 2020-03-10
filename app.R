@@ -180,23 +180,26 @@ server <- function(input, output){
   ###################################################
   # Table with basin stats!
   
-  table_info <- reactive({
-    
-    sgma_basins %>% 
-      dplyr::filter(sub_basin_final == input$gw_basin) %>% 
-      dplyr::select(sub_basin_final, area_sq_mi, population, priority)
-      
-  }) 
+  # table_info <- reactive({
+  #   
+  #   sgma_basins %>% 
+  #     dplyr::filter(sub_basin_final == input$gw_basin) %>% 
+  #     dplyr::select(sub_basin_final, area_sq_mi, population, priority)
+  #     
+  # }) 
   
   output$basin_table <- renderTable({
-    table_info()
+    
+    data.frame(a = c(1,2), b = c("yes","no"))
+    
   })
+  
   
   ####################################################
   #Second Map!
   
   max_score_filter <- reactive({
-    mask(max_score_raster, basin_filter())
+    raster::mask(max_score_raster, basin_filter())
     })
   # 'mask' is not working, need to find a new method of clipping raster to selected basin 
 

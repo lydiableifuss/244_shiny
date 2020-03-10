@@ -61,82 +61,49 @@ zipcodes <- read_sf(dsn = here::here("data"),
 
 # User interface
 
-ui <- dashboardPage(
-  #themeSelector(),
-  dashboardHeader(title = "Recharge for Resilience"),
-  dashboardSidebar(
-    sidebarMenu(
-      menuItem("Project Information", 
-               tabName = "homepage", 
-               icon = icon("tint")),
-      menuItem("Groundwater Basins", 
-               tabName = "basins", 
-               icon = icon("map-marker-alt")),
-      menuItem("Explore Recharge Suitability", 
-               tabName = "suitability_considerations", 
-               icon = icon("search-plus")),
-      menuItem("Learn More!", 
-               tabName = "referencepage", 
-               icon = icon("book-open"))
-    )
-  ),
-  dashboardBody(
-    tabItems(
-      tabItem(
-        tabName = "homepage",
-        fluidRow(
-          box(title = "Project Overview Goes Here")
-        )
-      ),
-      tabItem(
-        tabName = "basins",
-        fluidRow(
-          box(title = "Find your groundwater basin!",
-                textInput("zip_code",
-                          label = ("Enter an zipcode in the Central Valley to identify its subbasin:"),
-                          value = "e.g. 93638")),
-          box(title = "Explore your basin's characteristics!",
-              selectInput("gw_basin",
-                          label = ("Choose a groundwater basin to see its location and statistics:"),
-                          choices = c(unique(sgma_basins$sub_basin_final)),
-                          selected = NULL))
-        ),
-        fluidPage(
-          box(title = "Map of Groundwater Basins",
-          tmapOutput("ca_map", height = 425, width = 425),
-          status = "info",
-          width = 6
-          ),
-          box(title = "Groundwater Basin Statistics",
-          tableOutput("basin_table")
-          )
-        ),
-      ),
-      tabItem(
-        tabName = "suitability_considerations",
-        fluidRow(
-          box(title = "Benefits and Feasibility Considerations",
-              checkboxGroupInput("consideration_select",
-                                 label = ("Choose recharge considerations to visualize"),
-                                 choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen")))
-        ),
-        fluidPage(
-          box(title = "Map of Max Scores",
-              leafletOutput("max_map", height = 425, width = 425),
-              status = "info",
-              width = 6
-          )
-        )
-      ),
-      tabItem(
-        tabName = "referencepage",
-        fluidRow(
-          box(title = "Data Sources")
-        )
-      )
-    )
-  )
+ui <- navbarPage("Recharge for Resilience",
+                 #themeSelector(),
+                 theme = shinytheme("paper"),
+                 tabPanel("Project Information",
+                          h1("Welcome to our shiny app"),
+                          p("hopefully it functions by next weeek")
+                 ),
+                 tabPanel("Groundwater Basins", 
+                          sidebarLayout(
+                            sidebarPanel("Use your zipcode to identify a groundwater basin!",
+                                         textInput("zip_code",
+                                                   label = ("Enter an zipcode in the Central Valley to identify its subbasin:"),
+                                                   value = "e.g. 93638"),
+                                         "Select your groundwater basin to see its location and statistics!",
+                                         selectInput("gw_basin",
+                                                     label = ("Choose a groundwater basin to see its location and statistics:"),
+                                                     choices = c(unique(sgma_basins$sub_basin_final)),
+                                                     selected = NULL)
+                            ),
+                            mainPanel(tmapOutput("ca_map"),
+                                      HTML("<br><br><br>"),
+                                      tableOutput("basin_table")
+                            )
+                          )
+                 ),
+                 tabPanel("Benefits and Feasibility",
+                          sidebarLayout(
+                            sidebarPanel("Select datasets to visualize in your basin",
+                                         checkboxGroupInput("consideration_select",
+                                                            label = ("Choose recharge considerations to visualize"),
+                                                            choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen")),
+                            ),
+                            mainPanel(leafletOutput("max_map")
+                            )
+                          )),
+                 tabPanel("Learn More",
+                          h1("Bren School Masters Group Project"),
+                          p("Are we done with this yet")),
+                 tabPanel("Data Sources",
+                          h1("from lots of places"),
+                          p("publically available, state agencies or research institutions"))
 )
+
 
 
 

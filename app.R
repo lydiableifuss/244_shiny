@@ -215,8 +215,9 @@ server <- function(input, output){
   table_info <- reactive({
     
     sgma_basins %>% 
-      dplyr::select(sub_basin_final, area_sq_mi, population, priority) %>% 
-      dplyr::filter(sub_basin_final == input$gw_basin)
+      dplyr::filter(sub_basin_final == input$gw_basin) %>% 
+      dplyr::select(sub_basin_final, area_sq_mi, population, priority)
+      
   }) 
   
   output$basin_table <- renderTable({

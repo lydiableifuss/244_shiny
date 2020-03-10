@@ -226,14 +226,14 @@ server <- function(input, output){
   ####################################################
   #Second Map!
   
-  #max_score_filter <- mask(max_score_raster, basin_filter)
+  max_score_filter <- reactive({mask(max_score_raster, basin_filter)})
   # 'mask' is not working, need to find a new method of clipping raster to selected basin 
 
   
   max_score_map <- reactive({
     leaflet() %>% 
       addProviderTiles(providers$CartoDB.Positron) %>% 
-      addRasterImage(max_score_raster) 
+      addRasterImage(max_score_filter) 
   })
   
   output$max_map <- renderLeaflet({

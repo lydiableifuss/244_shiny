@@ -108,7 +108,8 @@ ui <- dashboardPage(
           width = 6
           ),
           box(title = "Groundwater Basin Statistics",
-            tableOutput("basin_table"))
+          tableOutput("basin_table")
+          )
         ),
       ),
       tabItem(
@@ -165,6 +166,7 @@ server <- function(input, output){
   })
   
   
+  # Making the reactive map with basin and zip code selections
   
   #basin_labels <- reactive({
     

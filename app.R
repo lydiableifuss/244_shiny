@@ -11,7 +11,6 @@ library(here)
 library(janitor)
 library(snakecase)
 library(RColorBrewer)
-library(shinyWidgets)
 
 #Mapping 
 library(paletteer)
@@ -50,7 +49,7 @@ sgma_basins <- sgma_basins_all %>%
 
 wgs84 = "+proj=longlat +datum=WGS84 +ellps=WGS84 +no_defs" # Just have this ready to copy/paste
 
-max_score_raster <- raster::raster(here::here("data", "max_final_score.tif"))
+max_score_raster <- raster::raster(here::here("data", "Max_final_score_LU.tif"))
 
 max_score_reproj = projectRaster(max_score_raster, crs = wgs84, method = "bilinear")
 
@@ -58,7 +57,7 @@ zipcodes <- read_sf(dsn = here::here("data"),
                            layer = "ZCTA2010") %>% 
   st_transform(crs = 4326) %>% 
   clean_names() %>% 
-  dplyr::select(zcta, longitude, latitude)
+  dplyr::select(zcta)
 
 
 # User interface
@@ -93,7 +92,7 @@ ui <- navbarPage("Recharge for Resilience",
                             sidebarPanel("Select datasets to visualize in your basin",
                                          checkboxGroupInput("consideration_select",
                                                             label = ("Choose recharge considerations to visualize"),
-                                                            choices = c("Conveyance" = 1, "Ecosystems" = 2, "Dry Domestic Wells" = 3, "EnviroScreen" = 4, "Clean-Up Sites" = 5)),
+                                                            choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen"))
                             ),
                             mainPanel(leafletOutput("max_map")
                             )
@@ -158,9 +157,8 @@ server <- function(input, output){
                                               offset=c(0,15))
                   ) %>% 
       addPolygons(data = zipcode_filter(),
-                  color = "darkolivegreen",
-                  weight = 0.4,
-                  fillOpacity = 0.8)
+                  color = "red",
+                  weight = 0.4)
     
  })
   
@@ -187,9 +185,6 @@ server <- function(input, output){
   ####################################################
   #Second Map!
   
-  pal <- colorNumeric("RdYlGn", reverse = TRUE, values(max_score_reproj),
-                             na.color = "transparent")
-  
   basin_select <- reactive({ 
    
     sgma_basins %>% 
@@ -202,20 +197,13 @@ server <- function(input, output){
     raster_mask <- raster::mask(max_score_reproj, basin_select())
     
     })
+  # 'mask' is not working, need to find a new method of clipping raster to selected basin 
 
   
   max_score_map <- reactive({
     leaflet() %>% 
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addPolygons(data = cv_all,
-                  color = "black",
-                  weight = 0.6,
-                  fillOpacity = 0) %>% 
-      addRasterImage(max_score_filter(),
-                     colors = pal) %>% 
-                     addLegend(pal = pal, values = values(max_score_filter()),
-                               title = "Recharge Suitability")
-      
+      addProviderTiles(providers$CartoDB.Positron) %>% 
+      addRasterImage(max_score_filter()) 
   })
   
   output$max_map <- renderLeaflet({

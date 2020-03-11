@@ -59,6 +59,10 @@ zipcodes <- read_sf(dsn = here::here("data"),
   clean_names() %>% 
   dplyr::select(zcta)
 
+drywells <- read_sf(here("data",
+                         "drywells_cv.shp")) %>% 
+  st_transform(crs = 4326)
+
 
 # User interface
 
@@ -204,6 +208,7 @@ server <- function(input, output){
     leaflet() %>% 
       addProviderTiles(providers$CartoDB.Positron) %>% 
       addRasterImage(max_score_filter()) 
+
   })
   
   output$max_map <- renderLeaflet({

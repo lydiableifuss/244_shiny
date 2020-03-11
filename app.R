@@ -92,7 +92,7 @@ ui <- navbarPage("Recharge for Resilience",
                             sidebarPanel("Select datasets to visualize in your basin",
                                          checkboxGroupInput("consideration_select",
                                                             label = ("Choose recharge considerations to visualize"),
-                                                            choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen"))
+                                                            choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen")),
                             ),
                             mainPanel(leafletOutput("max_map")
                             )
@@ -136,14 +136,6 @@ server <- function(input, output){
   
   # Making the reactive map with basin and zip code selections
   
-  #basin_labels <- reactive({
-    
-    #sprintf(
-    #"%s, Area: %g acres, Population: %g, DWR Priority: %s",
-    #basin_filter()$sub_basin_final, basin_filter()$area_acres, basin_filter()$population, basin_filter()$priority %>% 
-      #lapply(htmltools::HTML)
-  #)
-  #})
   
   basin_map <- reactive({
     leaflet() %>% 
@@ -180,17 +172,12 @@ server <- function(input, output){
   ###################################################
   # Table with basin stats!
   
-  # table_info <- reactive({
-  #   
-  #   sgma_basins %>% 
-  #     dplyr::filter(sub_basin_final == input$gw_basin) %>% 
-  #     dplyr::select(sub_basin_final, area_sq_mi, population, priority)
-  #     
-  # }) 
   
   output$basin_table <- renderTable({
     
-    data.frame(basin_name = c(input$gw_basin), basin_area = c(basin_filter()$area_sq_mi), population = c(basin_filter()$population), DWR_priority = c(basin_filter()$priority))
+    table_df <- data.frame(basin_name = c(input$gw_basin), basin_area = c(basin_filter()$area_sq_mi), population = c(basin_filter()$population), DWR_priority = c(basin_filter()$priority))
+    
+    `colnames<-`(table_df, c("Basin Name", "Area (square miles)", "Population", "DWR Priority"))
     
   })
   
@@ -198,8 +185,17 @@ server <- function(input, output){
   ####################################################
   #Second Map!
   
-  max_score_filter <- reactive({
-    raster::mask(max_score_raster, basin_filter())
+  basin_select <- reactive({ 
+   
+    sgma_basins %>% 
+      dplyr::filter(sub_basin_final == input$gw_basin)
+    
+    })
+  
+   max_score_filter <- reactive({
+    
+    raster_mask <- raster::mask(max_score_reproj, basin_select())
+    
     })
   # 'mask' is not working, need to find a new method of clipping raster to selected basin 
 

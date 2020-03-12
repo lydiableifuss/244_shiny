@@ -11,6 +11,13 @@ library(here)
 library(janitor)
 library(snakecase)
 library(RColorBrewer)
+library(shinyjs)
+library(DT)
+library(visNetwork)
+library(rintrojs)
+library(stringr)
+library(png)
+library(shinyWidgets)
 
 #Mapping 
 library(paletteer)
@@ -66,14 +73,37 @@ drywells <- read_sf(here("data",
 
 # User interface
 
-ui <- navbarPage("Recharge for Resilience",
+ui <- navbarPage(
+  
+  header = tagList(
+  useShinydashboard()
+),
+
+"Recharge for Resilience",
                  #themeSelector(),
                  theme = shinytheme("paper"),
                  tabPanel("Project Information",
-                          h1("Welcome to our shiny app"),
-                          p("hopefully it functions by next weeek")
+                          icon = icon("home"),
+                          h1("Welcome to our shiny app",
+                             style = "font-size:40px",
+                             align = "center"),
+                          shiny::HTML("
+                          <p> California has an increasingly scarce and unreliable surface water supply. As the climate changes, droughts are expected to become more frequent and extreme, precipitation is expected to fall as rain rather than snow in shorter, more intense periods, and reliance on the Sierra snowpack for storage will become less tenable. Strategically planning for water storage, including the protection and augmentation of groundwater resources, can help make farms, cities, and ecosystems more resilient to less predictable future water availability. <br> <br>
+
+                            The Sustainable Groundwater Management Act of 2014 (SGMA) adds regulatory structure to the goal of protecting and augmenting groundwater supplies by requiring a regionalized approach to groundwater management throughout the state. Many Groundwater Sustainability Agencies (GSAs) have identified managed aquifer recharge (MAR) as a tool they will use to comply with SGMA during  the 20-year implementation period, beginning in 2020. <br> <br>
+                            
+                            Currently, groundwater managers lack the tools and information necessary to identify ideal locations to invest in groundwater recharge projects that are able to achieve multiple benefits. The spatial visualization in this app allows users to see how physical surface and subsurface conditions along with a surficial nitrogen balance inform areas that are better and worse for implementing recharge in a groundwater basin. In addition, users are able to overlay the location of other points of interest, including: domestic wells that have run dry, potential groundwater dependent ecosystems, listed contamination cleanup sites, and water conveyance infrastructure. <br> <br>
+                            
+                            This tool makes information regarding multi-benefit groundwater recharge at a regional level available to groundwater management entities, allowing Groundwater Sustainability Agencies to meet compliance requirements while realizing other locally relevant benefits. The tool incorporates publicly available information from research institutions and state agencies, eliminating some costs associated with using a recharge siting tool and ensuring transferability across the Central Valley to basins with a varying degree of local data. <br> <br>
+                            
+                            The Sustainable Groundwater Management Act presents an opportunity to reinvision California’s approach to water management by including a more comprehensive consideration of the interconnected benefits associated with groundwater recharge and storage. The information available in this tool will facilitate the realization of a suite of benefits to be gained through the implementation of groundwater recharge projects in California and will help the state move forward in achieving a sustainable and resilient water future.
+                            "),
+                          img(src="image.jpg", height="100%",width="100%",style = 'position: absolute; opacity: 0.2;'
+                          ),
+                          tags$hr()
                  ),
                  tabPanel("Groundwater Basins", 
+                          icon = icon("tint"),
                           sidebarLayout(
                             sidebarPanel("Use your zipcode to identify a groundwater basin!",
                                          textInput("zip_code",
@@ -92,6 +122,7 @@ ui <- navbarPage("Recharge for Resilience",
                           )
                  ),
                  tabPanel("Benefits and Feasibility",
+                          icon = icon("swatchbook"),
                           sidebarLayout(
                             sidebarPanel("Select datasets to visualize in your basin",
                                          checkboxGroupInput("consideration_select",
@@ -102,11 +133,22 @@ ui <- navbarPage("Recharge for Resilience",
                             )
                           )),
                  tabPanel("Learn More",
+                          icon = icon("envelop"),
                           h1("Bren School Masters Group Project"),
                           p("Are we done with this yet")),
                  tabPanel("Data Sources",
-                          h1("from lots of places"),
-                          p("publically available, state agencies or research institutions"))
+                          icon = icon("server"),
+                          shiny::HTML("<h3><b> References: </b></h1>
+                                      <p> [1] Soil Agricultural Groundwater Banking Index. Available at: https://casoilresource.lawr.ucdavis.edu/sagbi/ <br><br>
+                                      [2] Depth to Groundwater. https://gis.water.ca.gov/app/gicima/ <br><br>
+                                      [3] Corcoran Clay Depth: https://water.usgs.gov/GIS/metadata/usgswrd/XML/pp1766_corcoran_clay_depth_feet.xml <br><br>
+                                      [4] Corcoran Clay Thickness: https://water.usgs.gov/GIS/metadata/usgswrd/XML/pp1766_corcoran_clay_thickness_feet.xml <br><br>
+                                      [5] National Hydrography Dataset: https://www.usgs.gov/core-science-systems/ngp/national-hydrography/nhdplus-high-resolution <br><br>
+                                      [6] Natural Communities Commonly Associated With Groundwater: https://gis.water.ca.gov/app/NCDatasetViewer/ <br><br>
+                                      [7] GeoTracker: https://geotracker.waterboards.ca.gov/map/?CMD=runreport&myaddress=Sacramento <br><br>
+                                      [8] California Household Water Shortage Data: https://mydrywatersupply.water.ca.gov/report/publicpage <br><br>
+                                      [9] CalEnviroScreen: https://oehha.maps.arcgis.com/apps/webappviewer/index.html?id=4560cfbce7c745c299b2d0cbb07044f5 <br><br>
+                                      [10] California Zip Codes: https://earthworks.stanford.edu/catalog/stanford-dc841dq9031"))
 )
 
 

@@ -296,13 +296,15 @@ server <- function(input, output){
      gde_crop <- st_intersection(gde_fix, basin_select())
    })
    
+   pal <- colorNumeric("RdYlGn", reverse = TRUE, values(max_score_reproj), na.color = "transparent")
    
    max_score_map <- reactive({
      leaflet() %>%
        #Base layers
        addProviderTiles(providers$CartoDB.Positron, group = "basemap") %>%
        addPolygons(data = sgma_basins, color = "black", weight = 0.5, fillOpacity = 0) %>% 
-       addRasterImage(max_score_filter()) %>%
+       addRasterImage(max_score_filter(), colors = pal) %>%
+       addLegend(pal = pal, values = values(max_score_filter()), title = "Recharge Suitability") %>% 
        #Overlay groups
        addCircleMarkers(data = wells_filter(), group = "Domestic Wells that Have Run Dry", color = "blue", radius = 3, weight = 1) %>%
        addCircleMarkers(data = geo_filter(), color = "purple", weight = 1, radius = 3, group = "GeoTracker Clean-Up Sites") %>%

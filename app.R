@@ -101,22 +101,25 @@ ui <- navbarPage(
 
 "Recharge for Resilience",
                  #themeSelector(),
-                 theme = shinytheme("paper"),
+                 theme = shinytheme("flatly"),
                  tabPanel("Project Information",
                           icon = icon("home"),
-                          h1("Improving California’s Water Resilience through Strategic Siting of Multi-Benefit Groundwater Recharge Projects",
+                          h1("Explore a Decision Support Tool for",
+                             style = "font-size:32px",
+                             align = "center"),
+                          h1("Strategic Siting of Multi-Benefit Groundwater Recharge Projects",
                              style = "font-size:40px",
                              align = "center"),
                           img(src="image.jpg", height="100%",width="100%",style = 'position: absolute; opacity: 0.2;'
                           ),
                           fluidRow(column(2), column(8,shiny::HTML("
-                          <h5> <center> <br> California has an increasingly scarce and unreliable surface water supply. As the climate changes, droughts are expected to become more frequent and extreme, precipitation is expected to fall as rain rather than snow in shorter, more intense periods, and reliance on the Sierra snowpack for storage will become less tenable. Strategically planning for water storage, including the protection and augmentation of groundwater resources, can help make farms, cities, and ecosystems more resilient to less predictable future water availability. <br> <br>
+                          <h4> <center> <br> California has an increasingly scarce and unreliable surface water supply. As the climate changes, droughts are expected to become more frequent and extreme, precipitation is expected to fall as rain rather than snow in shorter, more intense periods, and reliance on the Sierra snowpack for storage will become less tenable. Strategically planning for water storage, including the protection and augmentation of groundwater resources, can help make farms, cities, and ecosystems more resilient to less predictable future water availability. <br> <br>
 
                             The Sustainable Groundwater Management Act of 2014 (SGMA) adds regulatory structure to the goal of protecting and augmenting groundwater supplies by requiring a regionalized approach to groundwater management throughout the state. Many Groundwater Sustainability Agencies (GSAs) have identified managed aquifer recharge (MAR) as a tool they will use to comply with SGMA during  the 20-year implementation period, beginning in 2020. <br> <br>
                             
                             Currently, groundwater managers lack the tools and information necessary to identify ideal locations to invest in groundwater recharge projects that are able to achieve multiple benefits. The spatial visualization in this app allows users to see how physical surface and subsurface conditions along with a surficial nitrogen balance inform areas that are better and worse for implementing recharge in a groundwater basin. In addition, users are able to overlay the location of other points of interest, including: domestic wells that have run dry, potential groundwater dependent ecosystems, listed contamination cleanup sites, and water conveyance infrastructure. <br> <br>
                             
-                            This tool makes information regarding multi-benefit groundwater recharge at a regional level available to groundwater management entities, allowing Groundwater Sustainability Agencies to meet compliance requirements while realizing other locally relevant benefits. The tool incorporates publicly available information from research institutions and state agencies, eliminating some costs associated with using a recharge siting tool and ensuring transferability across the Central Valley to basins with a varying degree of local data. </h5>"
+                            This tool makes information regarding multi-benefit groundwater recharge at a regional level available to groundwater management entities, allowing Groundwater Sustainability Agencies to meet compliance requirements while realizing other locally relevant benefits. The tool incorporates publicly available information from research institutions and state agencies, eliminating some costs associated with using a recharge siting tool and ensuring transferability across the Central Valley to basins with a varying degree of local data. </h4>"
                             )),
                                     column(2)
                  )),
@@ -127,6 +130,8 @@ ui <- navbarPage(
                                          textInput("zip_code",
                                                    label = ("Enter an zipcode in the Central Valley to identify its subbasin:"),
                                                    value = "e.g. 93638"),
+                                         shiny::HTML("<br><br><br>"),
+                                         shiny::HTML("<br><br><br>"),
                                          "Select your groundwater basin to see its location and statistics!",
                                          selectInput("gw_basin",
                                                      label = ("Choose a groundwater basin to see its location and statistics:"),

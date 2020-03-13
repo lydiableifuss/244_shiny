@@ -90,4 +90,4 @@ leaflet() %>%
   addPolygons(data = madera)
 
 
-
+if(input$wells_check == TRUE){addCircleMarkers(data = drywells

@@ -64,7 +64,7 @@ zipcodes <- read_sf(dsn = here::here("data"),
                            layer = "ZCTA2010") %>% 
   st_transform(crs = 4326) %>% 
   clean_names() %>% 
-  dplyr::select(zcta)
+  dplyr::select(zcta) 
 
 
 drywells <- read_sf(here("data",
@@ -75,6 +75,12 @@ drywells <- read_sf(here("data",
 geotracker <- read_sf(here("data",
                            "geotracker_cv.shp")) %>%
   st_transform(crs = 4326)
+
+nhd <- read_sf(here("data",
+                    "NHD_select_cv.shp")) %>% 
+  st_transform(crs = 4326) %>% 
+  dplyr::select(FType, FCode)%>% 
+  st_zm(drop = T, what = "ZM")
 
 
 # User interface
@@ -128,10 +134,7 @@ ui <- navbarPage(
                  tabPanel("Benefits and Feasibility",
                           icon = icon("swatchbook"),
                           sidebarLayout(
-                            sidebarPanel("Select datasets to visualize in your basin",
-                                         checkboxGroupInput("consideration_select",
-                                                            label = ("Choose recharge considerations to visualize"),
-                                                            choices = c("Conveyance", "GDEs", "Dry Domestic Wells", "EnviroScreen"))
+                            sidebarPanel("text here"
                             ),
                             mainPanel(leafletOutput("max_map")
                             )
@@ -275,12 +278,14 @@ server <- function(input, output){
      leaflet() %>%
        #Base layers
        addProviderTiles(providers$CartoDB.Positron, group = "basemap") %>%
+       addPolygons(data = sgma_basins, color = "black", weight = 0.5, fillOpacity = 0.1) %>% 
        addRasterImage(max_score_filter()) %>%
        #Overlay groups
-       addCircleMarkers(data = drywells, group = "Domestic Wells that Have Run Dry", color = "blue", radius = 0.4, weight = 0.7) %>%
-       addCircleMarkers(data = geotracker, color = "green", weight = 0.7, radius = 0.4, group = "GeoTracker Clean-Up Sites") %>%
+       addCircleMarkers(data = drywells, group = "Domestic Wells that Have Run Dry", color = "blue", radius = 1, weight = 0.7) %>%
+       addCircleMarkers(data = geotracker, color = "green", weight = 0.7, radius = 1, group = "GeoTracker Clean-Up Sites") %>%
+       addPolylines(data = nhd, group = "Conveyance Infrastructure", color = "black", weight = 1) %>% 
        addLayersControl(
-         overlayGroups = c("Domestic Wells that Have Run Dry", "GeoTracker Clean-Up Sites"),
+         overlayGroups = c("Domestic Wells that Have Run Dry", "GeoTracker Clean-Up Sites", "Conveyance Infrastructure"),
          options = layersControlOptions(collapsed = FALSE)
        )
      

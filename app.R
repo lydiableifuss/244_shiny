@@ -29,6 +29,7 @@ library(leaflet)
 library(htmltools)
 library(raster)
 library(tiler)
+library(lwgeom)
 #library(rmapshaper)   
 
 #1 Map of central valley basins, when you select your basin, the fill color changes (cv.shp and sgma_basins.shp)
@@ -81,6 +82,13 @@ nhd <- read_sf(here("data",
   st_transform(crs = 4326) %>% 
   dplyr::select(FType, FCode)%>% 
   st_zm(drop = T, what = "ZM")
+
+gde <- read_sf(here("data",
+                    "GDE_cv.shp")) %>% 
+  st_transform(crs = 4326)
+
+gde_fix <- st_make_valid(gde) %>% 
+  st_cast("MULTIPOLYGON")
 
 
 # User interface
@@ -272,20 +280,36 @@ server <- function(input, output){
     })
   # 'mask' is not working, need to find a new method of clipping raster to selected basin 
 
+   wells_filter <- reactive({
+     wells_crop <- st_intersection(drywells, basin_select())
+   })
+   
+   geo_filter <- reactive({
+     geo_crop <- st_intersection(geotracker, basin_select())
+   })
+   
+   nhd_filter <- reactive({
+     nhd_crop <- st_intersection(nhd, basin_select())
+   })
+   
+   gde_filter <- reactive({
+     gde_crop <- st_intersection(gde_fix, basin_select())
+   })
    
    
    max_score_map <- reactive({
      leaflet() %>%
        #Base layers
        addProviderTiles(providers$CartoDB.Positron, group = "basemap") %>%
-       addPolygons(data = sgma_basins, color = "black", weight = 0.5, fillOpacity = 0.1) %>% 
+       addPolygons(data = sgma_basins, color = "black", weight = 0.5, fillOpacity = 0) %>% 
        addRasterImage(max_score_filter()) %>%
        #Overlay groups
-       addCircleMarkers(data = drywells, group = "Domestic Wells that Have Run Dry", color = "blue", radius = 1, weight = 0.7) %>%
-       addCircleMarkers(data = geotracker, color = "green", weight = 0.7, radius = 1, group = "GeoTracker Clean-Up Sites") %>%
-       addPolylines(data = nhd, group = "Conveyance Infrastructure", color = "black", weight = 1) %>% 
+       addCircleMarkers(data = wells_filter(), group = "Domestic Wells that Have Run Dry", color = "blue", radius = 3, weight = 1) %>%
+       addCircleMarkers(data = geo_filter(), color = "purple", weight = 1, radius = 3, group = "GeoTracker Clean-Up Sites") %>%
+       addPolylines(data = nhd_filter(), group = "Conveyance Infrastructure", color = "black", weight = 5) %>% 
+       addPolygons(data = gde_filter(), group = "Groundwater Dependent Ecosystems", color = "green") %>% 
        addLayersControl(
-         overlayGroups = c("Domestic Wells that Have Run Dry", "GeoTracker Clean-Up Sites", "Conveyance Infrastructure"),
+         overlayGroups = c("Domestic Wells that Have Run Dry", "GeoTracker Clean-Up Sites", "Conveyance Infrastructure", "Groundwater Dependent Ecosystems"),
          options = layersControlOptions(collapsed = FALSE)
        )
      
@@ -302,4 +326,5 @@ server <- function(input, output){
 # Put them together to make our app!
 
 shinyApp(ui = ui, server = server)
+
 

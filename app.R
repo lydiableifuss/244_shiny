@@ -126,23 +126,25 @@ ui <- navbarPage(
                  tabPanel("Groundwater Basins", 
                           icon = icon("tint"),
                           sidebarLayout(
-                            sidebarPanel(h4("Use your zipcode to identify a groundwater basin!"),
+                            sidebarPanel(h4("The decision support tool is designed for use in any Central Valley groundwater basin. Enter a zipcode below to display the zipcode on the map, and then use your cursor to identify which groundwater basin it is in."),
+                                         shiny::HTML("<br><br><br>"),
                                          textInput("zip_code",
-                                                   label = ("Enter a zipcode below:"),
+                                                   label = ("Enter a zipcode:"),
                                                    value = "e.g. 93638"),
                                          shiny::HTML("<br><br><br>"),
+                                         h4("Select a groundwater basin to see its location within the Central Valley. Learn more about its size, population, and priority status as assigned by the Department of Water Resources. After making a basin selection, you can further explore recharge suitability for projects that acheive multiple benefits on the next page."),
                                          shiny::HTML("<br><br><br>"),
-                                         h4("Select your groundwater basin to see its location and statistics!"),
                                          selectInput("gw_basin",
-                                                     label = ("Select a Central Valley groundwater basin:"),
+                                                     label = ("Central Valley Groundwater Basins:"),
                                                      choices = c(unique(sgma_basins$sub_basin_final)),
                                                      selected = NULL),
                                          shiny::HTML("<br><br><br>"),
                                          shiny::HTML("<br><br><br>")
                             ),
-                            mainPanel(h5("text here"),
+                            mainPanel(h5("Map of California's Central Valley Groundwater Basins:"),
                                       tmapOutput("ca_map"),
-                                      h5("text here"),
+                                      h5("Under the Sustainable Groundwater Management Act of 2014 (SGMA), the CA Department of Water Resources assigned basins different priorities based on groundwater conditions in the basin. Critical basins have until 2040 to reached balanced inflows and outflows to the aquifer."),
+                                      h5("Learn about your selected basin:"),
                                       tableOutput("basin_table")
                             )
                           )
@@ -150,11 +152,11 @@ ui <- navbarPage(
                  tabPanel("Benefits and Feasibility",
                           icon = icon("swatchbook"),
                           sidebarLayout(
-                            sidebarPanel("text here"
+                            sidebarPanel(h4("text here explaining what the map considers for suitability, i.e. surface and subsurface conditions plus water quality")
                             ),
-                            mainPanel(h5("text here"),
+                            mainPanel(h5("map title here"),
                                       leafletOutput("max_map"),
-                                      h5("text here")
+                                      h5("text interpretig the map output here, maybe information about what our tool could do re. multiple benefit outputs so people wanna use it")
                             )
                           )),
                  tabPanel("Learn More",

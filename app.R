@@ -66,8 +66,14 @@ zipcodes <- read_sf(dsn = here::here("data"),
   clean_names() %>% 
   dplyr::select(zcta)
 
+
 drywells <- read_sf(here("data",
-                         "drywells_cv.shp")) %>% 
+                         "drywells_cv.shp")) %>%
+  st_transform(crs = 4326)
+
+
+geotracker <- read_sf(here("data",
+                           "geotracker_cv.shp")) %>%
   st_transform(crs = 4326)
 
 
@@ -84,24 +90,22 @@ ui <- navbarPage(
                  theme = shinytheme("paper"),
                  tabPanel("Project Information",
                           icon = icon("home"),
-                          h1("Welcome to our shiny app",
+                          h1("Improving California’s Water Resilience through Strategic Siting of Multi-Benefit Groundwater Recharge Projects",
                              style = "font-size:40px",
                              align = "center"),
-                          shiny::HTML("
-                          <p> California has an increasingly scarce and unreliable surface water supply. As the climate changes, droughts are expected to become more frequent and extreme, precipitation is expected to fall as rain rather than snow in shorter, more intense periods, and reliance on the Sierra snowpack for storage will become less tenable. Strategically planning for water storage, including the protection and augmentation of groundwater resources, can help make farms, cities, and ecosystems more resilient to less predictable future water availability. <br> <br>
+                          img(src="image.jpg", height="100%",width="100%",style = 'position: absolute; opacity: 0.2;'
+                          ),
+                          fluidRow(column(2), column(8,shiny::HTML("
+                          <h5> <center> <br> California has an increasingly scarce and unreliable surface water supply. As the climate changes, droughts are expected to become more frequent and extreme, precipitation is expected to fall as rain rather than snow in shorter, more intense periods, and reliance on the Sierra snowpack for storage will become less tenable. Strategically planning for water storage, including the protection and augmentation of groundwater resources, can help make farms, cities, and ecosystems more resilient to less predictable future water availability. <br> <br>
 
                             The Sustainable Groundwater Management Act of 2014 (SGMA) adds regulatory structure to the goal of protecting and augmenting groundwater supplies by requiring a regionalized approach to groundwater management throughout the state. Many Groundwater Sustainability Agencies (GSAs) have identified managed aquifer recharge (MAR) as a tool they will use to comply with SGMA during  the 20-year implementation period, beginning in 2020. <br> <br>
                             
                             Currently, groundwater managers lack the tools and information necessary to identify ideal locations to invest in groundwater recharge projects that are able to achieve multiple benefits. The spatial visualization in this app allows users to see how physical surface and subsurface conditions along with a surficial nitrogen balance inform areas that are better and worse for implementing recharge in a groundwater basin. In addition, users are able to overlay the location of other points of interest, including: domestic wells that have run dry, potential groundwater dependent ecosystems, listed contamination cleanup sites, and water conveyance infrastructure. <br> <br>
                             
-                            This tool makes information regarding multi-benefit groundwater recharge at a regional level available to groundwater management entities, allowing Groundwater Sustainability Agencies to meet compliance requirements while realizing other locally relevant benefits. The tool incorporates publicly available information from research institutions and state agencies, eliminating some costs associated with using a recharge siting tool and ensuring transferability across the Central Valley to basins with a varying degree of local data. <br> <br>
-                            
-                            The Sustainable Groundwater Management Act presents an opportunity to reinvision California’s approach to water management by including a more comprehensive consideration of the interconnected benefits associated with groundwater recharge and storage. The information available in this tool will facilitate the realization of a suite of benefits to be gained through the implementation of groundwater recharge projects in California and will help the state move forward in achieving a sustainable and resilient water future.
-                            "),
-                          img(src="image.jpg", height="100%",width="100%",style = 'position: absolute; opacity: 0.2;'
-                          ),
-                          tags$hr()
-                 ),
+                            This tool makes information regarding multi-benefit groundwater recharge at a regional level available to groundwater management entities, allowing Groundwater Sustainability Agencies to meet compliance requirements while realizing other locally relevant benefits. The tool incorporates publicly available information from research institutions and state agencies, eliminating some costs associated with using a recharge siting tool and ensuring transferability across the Central Valley to basins with a varying degree of local data. </h5>"
+                            )),
+                                    column(2)
+                 )),
                  tabPanel("Groundwater Basins", 
                           icon = icon("tint"),
                           sidebarLayout(
@@ -135,11 +139,31 @@ ui <- navbarPage(
                  tabPanel("Learn More",
                           icon = icon("envelop"),
                           h1("Bren School Masters Group Project"),
-                          p("Are we done with this yet")),
+                          shiny::HTML("<p> The analysis contained within this web app was completed as a component of a Masters' Thesis Group Project in partial satisfaction of the requirements for the degree of Master of Environmental Science and Management at the Bren School of Environmental Science & Management. This project was completed in partnership with the Environmental Defense Fund, with support from Dr. Scott Jasechko. <br><br>
+                            
+                            The analyses displayed in this platform were created by: Jenny Balmagia, Bridget Gibbons, Claire Madden, and Anna Perez Welter. <br><br>
+                                      
+                                      The data visualizations provided in this platform were created by: Lydia Bleifuss, Bridget Gibbons, and Claire Madden. "),
+                          tags$div(class = "submit",
+                                   tags$a(href = "https://waterresilience.wixsite.com/waterresilienceca", 
+                                          "Learn More About Our Project", 
+                                          target="_blank")),
+                          tags$div(class = "submit",
+                                   tags$a(href = "http://bren.ucsb.edu/", 
+                                          "Learn More About the Bren School", 
+                                          target="_blank")),
+                          tags$div(class = "submit",
+                                   tags$a(href = "https://www.edf.org/ecosystems/rebalancing-water-use-american-west", 
+                                          "Learn More About the Environmental Defense Fund's Western Water Initiative", 
+                                          target="_blank")),
+                          tags$hr(),
+                          fluidRow(tags$img(src = "bren.jpg", height = "20%", width = "20%"),
+                                   tags$img(src = "edf.jpg", height = "30%", width = "30%")
+                          )),
                  tabPanel("Data Sources",
                           icon = icon("server"),
-                          shiny::HTML("<h3><b> References: </b></h1>
-                                      <p> [1] Soil Agricultural Groundwater Banking Index. Available at: https://casoilresource.lawr.ucdavis.edu/sagbi/ <br><br>
+                          shiny::HTML("<h3> References: </h3>
+                                      <p> [1] Soil Agricultural Groundwater Banking Index. https://casoilresource.lawr.ucdavis.edu/sagbi/ <br><br>
                                       [2] Depth to Groundwater. https://gis.water.ca.gov/app/gicima/ <br><br>
                                       [3] Corcoran Clay Depth: https://water.usgs.gov/GIS/metadata/usgswrd/XML/pp1766_corcoran_clay_depth_feet.xml <br><br>
                                       [4] Corcoran Clay Thickness: https://water.usgs.gov/GIS/metadata/usgswrd/XML/pp1766_corcoran_clay_thickness_feet.xml <br><br>
@@ -245,13 +269,22 @@ server <- function(input, output){
     })
   # 'mask' is not working, need to find a new method of clipping raster to selected basin 
 
-  
-  max_score_map <- reactive({
-    leaflet() %>% 
-      addProviderTiles(providers$CartoDB.Positron) %>% 
-      addRasterImage(max_score_filter()) 
-
-  })
+   
+   
+   max_score_map <- reactive({
+     leaflet() %>%
+       #Base layers
+       addProviderTiles(providers$CartoDB.Positron, group = "basemap") %>%
+       addRasterImage(max_score_filter()) %>%
+       #Overlay groups
+       addCircleMarkers(data = drywells, group = "Domestic Wells that Have Run Dry", color = "blue", radius = 0.4, weight = 0.7) %>%
+       addCircleMarkers(data = geotracker, color = "green", weight = 0.7, radius = 0.4, group = "GeoTracker Clean-Up Sites") %>%
+       addLayersControl(
+         overlayGroups = c("Domestic Wells that Have Run Dry", "GeoTracker Clean-Up Sites"),
+         options = layersControlOptions(collapsed = FALSE)
+       )
+     
+   })
   
   output$max_map <- renderLeaflet({
     max_score_map()

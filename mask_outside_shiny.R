@@ -1,5 +1,42 @@
 
 library(tidyverse)
+library(shiny)
+library(shinythemes)
+library(shinydashboard)
+library(ggmap)
+library(here)
+library(janitor)
+library(snakecase)
+library(RColorBrewer)
+library(shinyjs)
+library(DT)
+library(visNetwork)
+library(rintrojs)
+library(stringr)
+library(png)
+library(shinyWidgets)
+
+library(paletteer)
+library(sf)
+library(tmap)
+library(mapview)
+library(tmaptools)
+library(leaflet)
+library(htmltools)
+library(raster)
+library(tiler)
+
+
+# try to get nhd polylines to show on leaflet map
+nhd <- read_sf(here("data", "NHD_select_cv.shp")) %>% 
+  st_transform(crs = 4326) %>% 
+  dplyr::select(FType, FCode) %>% 
+  st_zm(drop = T, what = "ZM")
+
+leaflet() %>% 
+  addPolylines(data = nhd)
+
+
 
 cv_all <- read_sf(dsn = here::here("data"),
                   layer = "cv") %>% 

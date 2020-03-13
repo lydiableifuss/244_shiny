@@ -126,20 +126,23 @@ ui <- navbarPage(
                  tabPanel("Groundwater Basins", 
                           icon = icon("tint"),
                           sidebarLayout(
-                            sidebarPanel("Use your zipcode to identify a groundwater basin!",
+                            sidebarPanel(h4("Use your zipcode to identify a groundwater basin!"),
                                          textInput("zip_code",
-                                                   label = ("Enter an zipcode in the Central Valley to identify its subbasin:"),
+                                                   label = ("Enter a zipcode below:"),
                                                    value = "e.g. 93638"),
                                          shiny::HTML("<br><br><br>"),
                                          shiny::HTML("<br><br><br>"),
-                                         "Select your groundwater basin to see its location and statistics!",
+                                         h4("Select your groundwater basin to see its location and statistics!"),
                                          selectInput("gw_basin",
-                                                     label = ("Choose a groundwater basin to see its location and statistics:"),
+                                                     label = ("Select a Central Valley groundwater basin:"),
                                                      choices = c(unique(sgma_basins$sub_basin_final)),
-                                                     selected = NULL)
+                                                     selected = NULL),
+                                         shiny::HTML("<br><br><br>"),
+                                         shiny::HTML("<br><br><br>")
                             ),
-                            mainPanel(tmapOutput("ca_map"),
-                                      HTML("<br><br><br>"),
+                            mainPanel(h5("text here"),
+                                      tmapOutput("ca_map"),
+                                      h5("text here"),
                                       tableOutput("basin_table")
                             )
                           )
@@ -149,13 +152,16 @@ ui <- navbarPage(
                           sidebarLayout(
                             sidebarPanel("text here"
                             ),
-                            mainPanel(leafletOutput("max_map")
+                            mainPanel(h5("text here"),
+                                      leafletOutput("max_map"),
+                                      h5("text here")
                             )
                           )),
                  tabPanel("Learn More",
-                          icon = icon("envelop"),
+                          icon = icon("envelope"),
                           h1("Bren School Masters Group Project"),
                           shiny::HTML("<p> The analysis contained within this web app was completed as a component of a Masters' Thesis Group Project in partial satisfaction of the requirements for the degree of Master of Environmental Science and Management at the Bren School of Environmental Science & Management. This project was completed in partnership with the Environmental Defense Fund, with support from Dr. Scott Jasechko. <br><br>
+                          The decision support tool was developed in ArcMap model builder. The reproducible workflow is free and available for use. If you would like to use the tool to explore potential groundwater recharge project locations in a Central Valley Basin, please contact the Bren student team through the contact page of our website below. <br><br>
                             
                             The analyses displayed in this platform were created by: Jenny Balmagia, Bridget Gibbons, Claire Madden, and Anna Perez Welter. <br><br>
                                       
@@ -173,8 +179,8 @@ ui <- navbarPage(
                                           "Learn More About the Environmental Defense Fund's Western Water Initiative", 
                                           target="_blank")),
                           tags$hr(),
-                          fluidRow(tags$img(src = "bren.jpg", height = "20%", width = "20%"),
-                                   tags$img(src = "edf.jpg", height = "30%", width = "30%")
+                          fluidRow(tags$img(src = "bren.jpg", height = "10%", width = "10%"),
+                                   tags$img(src = "edf.jpg", height = "15%", width = "15%")
                           )),
                  tabPanel("Data Sources",
                           icon = icon("server"),

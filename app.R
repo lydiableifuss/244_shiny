@@ -143,7 +143,7 @@ ui <- navbarPage(
                             ),
                             mainPanel(h5("Map of California's Central Valley Groundwater Basins:"),
                                       tmapOutput("ca_map"),
-                                      h5("Under the Sustainable Groundwater Management Act of 2014 (SGMA), the CA Department of Water Resources assigned basins different priorities based on groundwater conditions in the basin. Critical basins have until 2040 to reached balanced inflows and outflows to the aquifer."),
+                                      h5("Under the Sustainable Groundwater Management Act of 2014 (SGMA), the CA Department of Water Resources assigned basins different priorities based on groundwater conditions. Critical basins have until 2040 to reach balanced inflows and outflows to the aquifer."),
                                       h5("Learn about your selected basin:"),
                                       tableOutput("basin_table")
                             )

@@ -152,11 +152,11 @@ ui <- navbarPage(
                  tabPanel("Benefits and Feasibility",
                           icon = icon("swatchbook"),
                           sidebarLayout(
-                            sidebarPanel(h4("text here explaining what the map considers for suitability, i.e. surface and subsurface conditions plus water quality")
+                            sidebarPanel(h4("The color ramp displayed in your basin outline represents a relative ranking of groundwater recharge suitability from better (green) to worse (red). The groundwater recharge suitability ranking represents a combination of the following surface and subsurface considerations: The Soil Agricultural Groundwater Banking Index (SAGBI) to describe soil surface conditions, depth to groundwater to approximate aquifer storage space, percent of coarse grained soil materials to a depth of 250 feet below ground surface as a proxy for how easily water can move in the subsurface, and the depth and thickness of the Corcoran clay, which is a low permeability layer that may inhibit recharge in some locations. In addition, this map includes a calculated nitrate balance from three representatve years (1990, 2005, and 2020) to demonstrate the relative likelihood of added nitrate contamination in groundwater as a result of recharge.")
                             ),
-                            mainPanel(h5("map title here"),
+                            mainPanel(h5("Groundwater Recharge Suitability with Additional Considerations"),
                                       leafletOutput("max_map"),
-                                      h5("text interpretig the map output here, maybe information about what our tool could do re. multiple benefit outputs so people wanna use it")
+                                      h5("The map above allows for visualization of additional considerations related to groundwater recharge benefits and feasibility. Users can turn on or off layers to see the locations of domestic wells that have run dry, GeoTracker contamination clean up sites, conveyance infrastructure and groundwater dependent ecosystems. It would be preferrable to locate recharge projects closer to domestic wells that have run dry, conveyance infrastructure and groundwater dependent ecosystems but farther away from GeoTracker contamination cleanup sites. For a more detailed output of recharge suitability with weighted additional considerations, please contact our team via the link on the Learn More page.")
                             )
                           )),
                  tabPanel("Learn More",

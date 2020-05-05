@@ -6,11 +6,11 @@ library(shiny)
 library(tidyverse)
 library(shinythemes)
 library(shinydashboard)
-library(ggmap)
+#library(ggmap)
 library(here)
 library(janitor)
 library(snakecase)
-library(RColorBrewer)
+#library(RColorBrewer)
 library(shinyjs)
 library(DT)
 library(visNetwork)
@@ -18,19 +18,25 @@ library(rintrojs)
 library(stringr)
 library(png)
 library(shinyWidgets)
+#library(paletteer)
+
 
 #Mapping 
-library(paletteer)
 library(sf)
 library(tmap)
-library(mapview)
-library(tmaptools)
+#library(mapview)
+#library(tmaptools)
 library(leaflet)
 library(htmltools)
 library(raster)
 library(tiler)
 library(lwgeom)
-#library(rmapshaper)   
+#library(rmapshaper)
+
+#Deploying
+library(rsconnect)
+library(curl)
+library(devtools)
 
 #1 Map of central valley basins, when you select your basin, the fill color changes (cv.shp and sgma_basins.shp)
 
@@ -324,7 +330,7 @@ server <- function(input, output){
        addPolylines(data = nhd_filter(), group = "Conveyance Infrastructure", color = "black", weight = 5) %>% 
        addPolygons(data = gde_filter(), group = "Groundwater Dependent Ecosystems", color = "green") %>% 
        addLayersControl(
-         overlayGroups = c("Domestic Wells that Have Run Dry", "GeoTracker Clean-Up Sites", "Conveyance Infrastructure", "Groundwater Dependent Ecosystems"),
+         overlayGroups = c("Domestic Wells that Have Run Dry", "Groundwater Dependent Ecosystems", "GeoTracker Clean-Up Sites", "Conveyance Infrastructure"),
          options = layersControlOptions(collapsed = FALSE)
        )
      

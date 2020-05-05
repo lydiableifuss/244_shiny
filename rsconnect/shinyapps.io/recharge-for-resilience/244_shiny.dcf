@@ -1,0 +1,13 @@
+name: 244_shiny
+title: 244_shiny
+username:
+account: recharge-for-resilience
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2010010
+bundleId: 2981516
+url: https://recharge-for-resilience.shinyapps.io/244_shiny/
+when: 1586275101.55498
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData
